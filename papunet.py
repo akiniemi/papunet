@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 # -*- coding: utf-8 -*-
 
 ##
@@ -39,14 +38,14 @@ opener = None
 #
 # <a href="http://papunet.net/sites/papunet.net/files/kuvapankki/anna_minulle2.jpg"
 #   title="anna minulle (kuva: Elina Vanninen)"
-#   rel="lightbox[kuvapankki][<strong>anna minulle</strong><br><em>Kuva</em> Elina Vanninen]"
+#   rel="lightbox[kuvapankkihaku][<strong>A</strong><br><em>Kuva:</em> Kalevi Puistolinna<br><em>Lähde: </em>Papunetin kuvapankki]"
 #   class="lightbox-processed nounderline">
 #   <img typeof="foaf:Image"
 #     src="http://papunet.net/sites/papunet.net/files/styles/thumbnail/public/kuvapankki/anna_minulle2.jpg"
 #     width="100" height="100">
 # </a>
 word_re = re.compile('(?<=<strong>)[\w -]+', re.U)
-author_re = re.compile('(?<=kuva: )[\w ]+', re.U)
+author_re = re.compile('(?<=Kuva:</em>)[\w ]+', re.U)
 
 def populate_database(data):
     """Write the data into an sqlite3 database. The 'images.db' file
@@ -111,15 +110,15 @@ def populate_database(data):
 
 def get_imgurl(li):
     """Get the image URL"""
-    return li.div.span.a.get('href')
+    return li.a.get('href')
 
 def get_author(li):
     """Get image author"""
-    return author_re.search(li.div.span.a.get('title')).group().strip()
+    return author_re.search(li.a.get('rel')).group().strip()
 
 def get_word(li):
     """Get the word name"""
-    return word_re.search(li.div.span.a.get('rel')).group().strip()
+    return word_re.search(li.a.get('rel')).group().strip()
 
 def extract_images(link, no):
     """Extract images from the image-list <ul> element. Recurse into
